@@ -1,4 +1,7 @@
 import type {Settings} from './storage';
+import {t} from './i18n';
+// Absolut, damit auch /en/ die Worklet-Datei im Stammverzeichnis findet
+const WORKLET=`${import.meta.env.BASE_URL}worklet.js`;
 export class NoiseEngine {
   context:AudioContext|null=null;
   worklet:AudioWorkletNode|null=null;
@@ -13,7 +16,7 @@ export class NoiseEngine {
     if(this.context){await this.context.resume();this.update(settings);return;}
     const context=new AudioContext();
     try {
-      await context.audioWorklet.addModule(new URL('worklet.js',document.baseURI).href);
+      await context.audioWorklet.addModule(WORKLET);
       const node=new AudioWorkletNode(context,'noise-processor',{outputChannelCount:[2]});
       const high=context.createBiquadFilter();high.type='highpass';high.Q.value=.707;
       const low=context.createBiquadFilter();low.type='lowpass';low.Q.value=.707;
@@ -55,8 +58,8 @@ export class NoiseEngine {
   async exportWav(s:Settings,duration:number):Promise<Blob>{
     const rate=44100;const frames=Math.ceil(duration*rate);
     const offline=new OfflineAudioContext(2,frames,rate);
-    if(!offline.audioWorklet)throw new Error('Dieser Browser unterstützt keinen OfflineAudioContext mit AudioWorklet. Bitte WAV-Export in einem aktuellen Desktop-Browser versuchen.');
-    await offline.audioWorklet.addModule(new URL('worklet.js',document.baseURI).href);
+    if(!offline.audioWorklet)throw new Error(t('noOfflineWorklet'));
+    await offline.audioWorklet.addModule(WORKLET);
     const node=new AudioWorkletNode(offline,'noise-processor',{outputChannelCount:[2]});
     node.port.postMessage({slope:s.slope,width:s.width/100});
     const high=offline.createBiquadFilter();high.type='highpass';high.frequency.value=s.low;high.Q.value=.707;

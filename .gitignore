@@ -3,3 +3,6 @@ dist
 dev-dist
 .wrangler
 *.local
+# erzeugt von scripts/build-pages.mjs
+/index.html
+/en/index.html

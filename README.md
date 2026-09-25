@@ -16,6 +16,14 @@ npm run build
 npm run preview
 ```
 
+## Sprachen (DE/EN)
+
+- `/` ist Deutsch, `/en/` Englisch; beide verweisen per `hreflang` aufeinander (`x-default` → `/en/`).
+- `index.html` und `en/index.html` werden **generiert** (`npm run pages`, läuft automatisch vor `dev` und `build`) aus `src/page.template.html` und den Texten in `src/i18n/de.json` bzw. `en.json`. Nicht direkt bearbeiten – sie stehen in `.gitignore`.
+- `page` enthält die Seitentexte, `ui` die Laufzeit-Texte für `t()` aus `src/i18n.ts`. Beide Dateien müssen dieselben Schlüssel haben, sonst bricht der Build ab.
+- Die Rechtsseiten sind handgeschrieben: `impressum.html`/`datenschutz.html` (maßgeblich) und `en/imprint.html`/`en/privacy.html` (Übersetzung).
+- Die Sprachwahl wird lokal gemerkt; `public/lang.js` leitet `/` dann auf `/en/` um.
+
 ## Deploy (Cloudflare Pages)
 
 Deployment über die Git-Integration von Cloudflare Pages: Push auf `main` geht nach Production, andere Branches und PRs bekommen eine Preview-URL.

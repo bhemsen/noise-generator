@@ -8,7 +8,7 @@ export default defineConfig({
     registerType: 'autoUpdate',
     includeAssets: ['worklet.js', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png', 'apple-touch-icon.png'],
     manifest: {
-      id: './', name: 'Noise Generator', short_name: 'Noise', description: 'Offline noise synthesizer',
+      id: './', name: 'Noise Generator', short_name: 'Noise', description: 'Offline-Rauschgenerator für White, Pink und Brown Noise', lang: 'de', categories: ['music', 'utilities'],
       start_url: './', scope: './', display: 'standalone', background_color: '#0b1015', theme_color: '#0b1015',
       icons: [
         {src:'icons/icon-192.png',sizes:'192x192',type:'image/png'},
@@ -16,6 +16,6 @@ export default defineConfig({
         {src:'icons/icon-512.png',sizes:'512x512',type:'image/png',purpose:'maskable'}
       ]
     },
-    workbox: {globPatterns: ['**/*.{js,css,html,png,svg,webmanifest}'], cleanupOutdatedCaches: true, navigateFallback: 'index.html'}
+    workbox: {globPatterns: ['**/*.{js,css,html,png,svg,webmanifest}'], globIgnores: ['og-image.png'], cleanupOutdatedCaches: true, navigateFallback: 'index.html'}
   })]
 });

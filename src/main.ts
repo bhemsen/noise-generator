@@ -1,6 +1,7 @@
 import './style.css';
 import {NoiseEngine} from './audio';
 import {load,save,type Settings,type Preset} from './storage';
+import {setupInstall} from './install';
 import {registerSW} from 'virtual:pwa-register';
 registerSW({immediate:true});
 
@@ -10,7 +11,8 @@ const engine=new NoiseEngine();
 let settings={...defaults};let presets:Preset[]=[];let activeTimer:number|undefined;let endAt=0;let saving:number|undefined;
 const app=document.querySelector<HTMLDivElement>('#app')!;
 app.innerHTML=`<main class="shell">
-<header><div class="brand"><span class="brand-icon">≋</span><div><strong>NOISE</strong><small>OFFLINE SOUND STUDIO</small></div></div><span class="offline" id="network">● LOCAL FIRST</span></header>
+<header><div class="brand"><span class="brand-icon">≋</span><div><strong>NOISE</strong><small>OFFLINE SOUND STUDIO</small></div></div><div class="header-actions"><button class="offline install" id="install" hidden aria-expanded="false" aria-controls="install-hint">↓ APP INSTALLIEREN</button><span class="offline" id="network">● LOCAL FIRST</span></div></header>
+<section class="panel install-hint" id="install-hint" hidden aria-label="Zum Home-Bildschirm hinzufügen"><strong>Noise auf den Home-Bildschirm</strong><p>Tippe in Safari auf <b>Teilen</b> (□↑) und dann auf <b>„Zum Home-Bildschirm“</b>. Danach startet Noise wie eine App – auch ohne Internet.</p><div class="button-row"><button data-install-close>Schließen</button><button data-install-dismiss>Nicht mehr anzeigen</button></div></section>
 <section class="hero"><span class="eyebrow">YOUR SPACE. YOUR SOUND.</span><h1>Find your<br><em>frequency.</em></h1><p>Generatives Rauschen, genau so wie du es brauchst. Keine Accounts, keine Audiodateien, kein Tracking.</p></section>
 <section class="player panel"><div class="player-top"><div><span class="eyebrow">NOW PLAYING</span><h2 id="now">Brown Noise</h2></div><span class="pill" id="status">BEREIT</span></div><canvas id="spectrum" width="1000" height="180" aria-label="Live-Frequenzspektrum"></canvas><div class="player-bottom"><button class="play" id="play" aria-label="Wiedergabe starten">▶</button><div><strong id="play-label">Start listening</strong><small id="timer-label">Endloswiedergabe</small></div><span class="headphones">◖))</span></div></section>
 <section class="panel"><div class="section-head"><div><span class="eyebrow">01 / SOUND COLOR</span><h2>Noise Color</h2></div><span class="value" id="slope-value">−6 dB/oct</span></div><div class="presets" id="colors"></div><label for="slope">Spektralneigung <output id="slope-out"></output></label><input type="range" id="slope" min="-6" max="6" step="0.5"/><div class="range-ends"><span>DEEP</span><span>BRIGHT</span></div><p class="hint">Die Farb-Presets verwenden angenäherte Spektren; die dB/Oktave-Werte sind Richtwerte, keine kalibrierte Messung.</p></section>
@@ -24,6 +26,7 @@ app.innerHTML=`<main class="shell">
 const $=<T extends HTMLElement>(id:string)=>document.getElementById(id) as T;
 const number=(id:string)=>Number(($(id) as HTMLInputElement).value);
 const format=(n:number)=>new Intl.NumberFormat('de-DE').format(n);
+setupInstall($<HTMLButtonElement>('install'),$('install-hint'));
 function toast(message:string){const t=$('toast');t.textContent=message;t.classList.add('show');window.setTimeout(()=>t.classList.remove('show'),4500);}
 function persist(){window.clearTimeout(saving);saving=window.setTimeout(()=>{void save('settings',settings).catch(()=>toast('Speichern nicht möglich – Browser-Speicher prüfen.'));},250);}
 function setStatus(text:string){$('status').textContent=text;}

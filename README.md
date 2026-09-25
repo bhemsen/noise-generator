@@ -18,16 +18,16 @@ npm run preview
 
 ## Deploy (Cloudflare Pages)
 
-Die Pipeline `.github/workflows/deploy.yml` baut bei jedem Push und deployt per Wrangler: `main` geht nach Production, PR-Branches bekommen eine Preview-URL.
+Deployment über die Git-Integration von Cloudflare Pages: Push auf `main` geht nach Production, andere Branches und PRs bekommen eine Preview-URL.
 
-Einmalige Einrichtung:
+Einstellungen im Pages-Projekt:
 
-1. Pages-Projekt anlegen: `npx wrangler pages project create noise-generator --production-branch=main`
-2. In Cloudflare einen API-Token mit der Berechtigung *Account → Cloudflare Pages → Edit* erstellen.
-3. Im GitHub-Repo unter *Settings → Secrets and variables → Actions* die Secrets `CLOUDFLARE_API_TOKEN` und `CLOUDFLARE_ACCOUNT_ID` hinterlegen.
-4. Optional: eine Custom Domain im Pages-Projekt verbinden.
+- Framework preset: *None*
+- Build command: `npm run build:deploy`
+- Build output directory: `dist`
+- Node-Version kommt aus `.node-version`
 
-Vor jedem Deploy prüft `npm run check:placeholders`, dass im Build keine `TODO-…`-Platzhalter mehr stehen (Impressum, Datenschutz, Sponsor-Link). Security-Header und Caching stehen in `public/_headers`.
+`build:deploy` baut und prüft danach, dass im Build keine `TODO-…`-Platzhalter mehr stehen (Impressum, Datenschutz). Solange welche drin sind, schlägt der Cloudflare-Build bewusst fehl. Security-Header und Caching stehen in `public/_headers`.
 
 ## Funktionen
 
